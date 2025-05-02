@@ -17,41 +17,56 @@ fun RegistroScreen(navController: NavController, viewModel: TiendaViewModel) {
     var precio by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var imagenUrl by remember { mutableStateOf("") }
-    var errorMensaje by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("Agregar Producto", style = MaterialTheme.typography.h6)
+    Scaffold(topBar = {
+        TopAppBar(title = { Text("Registrar Producto") })
+    }) { padding ->
+        Column(modifier = Modifier
+            .padding(16.dp)
+            .padding(padding)) {
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = { Text("Nombre") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") })
-        OutlinedTextField(value = precio, onValueChange = { precio = it }, label = { Text("Precio") })
-        OutlinedTextField(value = descripcion, onValueChange = { descripcion = it }, label = { Text("Descripción") })
-        OutlinedTextField(value = imagenUrl, onValueChange = { imagenUrl = it }, label = { Text("URL de imagen") })
+            OutlinedTextField(
+                value = precio,
+                onValueChange = { precio = it },
+                label = { Text("Precio") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        if (errorMensaje.isNotBlank()) {
-            Text(errorMensaje, color = MaterialTheme.colors.error)
-        }
+            OutlinedTextField(
+                value = descripcion,
+                onValueChange = { descripcion = it },
+                label = { Text("Descripción") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(onClick = {
-                if (nombre.isBlank() || precio.isBlank() || descripcion.isBlank() || imagenUrl.isBlank()) {
-                    errorMensaje = "Todos los campos son obligatorios"
-                    return@Button
-                }
+            OutlinedTextField(
+                value = imagenUrl,
+                onValueChange = { imagenUrl = it },
+                label = { Text("URL de Imagen") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-                val precioDouble = precio.toDoubleOrNull()
-                if (precioDouble == null) {
-                    errorMensaje = "Precio inválido"
-                    return@Button
-                }
-
-                viewModel.agregarProducto(nombre, precioDouble, descripcion, imagenUrl)
-                navController.popBackStack()
-            }) {
-                Text("Guardar")
-            }
-
-            Button(onClick = { navController.popBackStack() }) {
-                Text("Cancelar")
+            Button(
+                onClick = {
+                    val precioNum = precio.toDoubleOrNull()
+                    if (!nombre.isBlank() && precioNum != null && imagenUrl.isNotBlank()) {
+                        viewModel.agregarProducto(nombre, precioNum, descripcion, imagenUrl)
+                        navController.popBackStack()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Guardar Producto")
             }
         }
     }

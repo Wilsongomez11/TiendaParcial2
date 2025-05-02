@@ -8,24 +8,24 @@ package com.example.parcial2
 
 
 @Composable
-    fun NavGraph(viewModel: TiendaViewModel) {
-        val navController = rememberNavController()
+fun NavGraph(viewModel: TiendaViewModel) {
+    val navController = rememberNavController()
 
-        NavHost(navController = navController, startDestination = "catalogo") {
-            composable("catalogo") {
-                CatalogoScreen(navController, viewModel)
-            }
-            composable("registro") {
-                RegistroScreen(navController, viewModel)
-            }
-            composable("detalle/{id}", arguments = listOf(navArgument("id") {
-                type = NavType.IntType
-            })) { backStackEntry ->
-                val id = backStackEntry.arguments?.getInt("id")
-                DetalleScreen(navController, viewModel, id)
-            }
-            composable("carrito") {
-                CarritoScreen(navController, viewModel)
-            }
+    NavHost(navController = navController, startDestination = "catalogo") {
+        composable("catalogo") {
+            CatalogoScreen(navController, viewModel)
+        }
+        composable("registro") {
+            RegistroScreen(navController, viewModel)
+        }
+        composable("detalle/{id}", arguments = listOf(navArgument("id") {
+            type = NavType.IntType
+        })) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id")
+            DetalleScreen(navController, viewModel, id)
+        }
+        composable("carrito") {
+            CarritoScreen(navController, viewModel)
         }
     }
+}

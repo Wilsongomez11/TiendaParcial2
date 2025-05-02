@@ -11,71 +11,80 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Size
 import com.example.parcial2.ViewModel.TiendaViewModel
 
 @Composable
 fun CatalogoScreen(navController: NavController, viewModel: TiendaViewModel) {
-    Column {
-        Text(
-            "Catálogo de Productos",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(8.dp)
-        )
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text("Catálogo de Productos") })
+        },
+        content = { padding ->
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)) {
 
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(viewModel.productos) { producto ->
-                ProductoItem(producto) {
-                    navController.navigate("detalle/${producto.id}")
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(viewModel.productos) { producto ->
+                        ProductoCard(producto = producto) {
+                            navController.navigate("detalle/${producto.id}")
+                        }
+                    }
+                }
+
+                Text(
+                    text = "Total carrito: $${viewModel.totalCarrito()}",
+                    style = MaterialTheme.typography.subtitle1,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(onClick = { navController.navigate("registro") }) {
+                        Text("Agregar Producto")
+                    }
+                    Button(onClick = { navController.navigate("carrito") }) {
+                        Text("Ir al Carrito")
+                    }
                 }
             }
         }
-
-        Text("Total carrito: $${viewModel.totalCarrito()}", modifier = Modifier.padding(8.dp))
-
-        Row(modifier = Modifier.padding(8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(onClick = { navController.navigate("registro") }) {
-                Text("Agregar Producto")
-            }
-            Button(onClick = { navController.navigate("carrito") }) {
-                Text("Ir al Carrito")
-            }
-        }
-    }
+    )
 }
 
 @Composable
-fun ProductoItem(producto: Producto, onClick: () -> Unit) {
-    Row(
+fun ProductoCard(producto: Producto, onClick: () -> Unit) {
+    Card(
         modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onClick() }
-        .padding(8.dp)) {
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() },
+        elevation = 8.dp
+    ) {
+        Row(modifier = Modifier.padding(8.dp)) {
+            val painter = rememberAsyncImagePainter(model = producto.imagenUrl)
 
-        val painter = rememberAsyncImagePainter(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(producto.imagenUrl)
-                .crossfade(true)
-                .size(Size.ORIGINAL)
-                .build()
-        )
+            Image(
+                painter = painter,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp)
+            )
 
-        Image(
-            painter = painter,
-            contentDescription = null,
-            modifier = Modifier.size(64.dp)
-        )
+            Spacer(modifier = Modifier.width(8.dp))
 
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column {
-            Text(producto.nombre, style = MaterialTheme.typography.subtitle1)
-            Text("Precio: $${producto.precio}")
+            Column(modifier = Modifier.align(Alignment.CenterVertically)) {
+                Text(producto.nombre, style = MaterialTheme.typography.h6)
+                Text("Precio: $${producto.precio}", style = MaterialTheme.typography.body2)
+            }
         }
     }
 }

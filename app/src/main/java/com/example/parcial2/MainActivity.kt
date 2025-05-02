@@ -7,7 +7,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.parcial2.ViewModel.TiendaViewModel
 import com.example.parcial2.ui.theme.Parcial2Theme
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
